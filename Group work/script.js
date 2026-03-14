@@ -13,6 +13,8 @@ const sendBtn = document.getElementById("sendBtn");
 const togglePass = document.getElementById("togglePass");
 const strengthFill = document.getElementById("strengthFill");
 
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 togglePass.addEventListener("click", () => {
     if (passwordInput.type === "password") {
         passwordInput.type = "text";
@@ -32,7 +34,7 @@ emailInput.addEventListener("input", () => {
     const val = emailInput.value;
     const errorDiv = document.getElementById("emailError");
     if (val === "") errorDiv.textContent = "Email is required";
-    else errorDiv.textContent = (val.includes("@") && val.includes(".")) ? "" : "Invalid email format";
+    else errorDiv.textContent = emailRegex.test(val) ? "" : "Invalid email format";
 });
 
 passwordInput.addEventListener("input", () => {
@@ -52,6 +54,7 @@ passwordInput.addEventListener("input", () => {
     else strengthFill.style.background = "green";
 
     if (pass === "") errorDiv.textContent = "Password is required";
+    else if (pass.length < 6) errorDiv.textContent = "Password must be at least 6 characters";
     else if (!hasUpper && !hasNumber) errorDiv.textContent = "Include uppercase letter & number";
     else if (!hasUpper) errorDiv.textContent = "Include at least one uppercase letter";
     else if (!hasNumber) errorDiv.textContent = "Include at least one number";
@@ -81,8 +84,8 @@ sendBtn.addEventListener("click", () => {
     if (emailVal === "") {
         document.getElementById("emailError").textContent = "Email is required";
         allGood = false;
-    } else if (!emailVal.includes("@") || !emailVal.includes(".")) {
-        document.getElementById("emailError").textContent = "Invalid email";
+    } else if (!emailRegex.test(emailVal)) {
+        document.getElementById("emailError").textContent = "Invalid email format";
         allGood = false;
     }
 
@@ -91,6 +94,9 @@ sendBtn.addEventListener("click", () => {
     const hasNumber = /[0-9]/.test(pass);
     if (pass === "") {
         document.getElementById("passwordError").textContent = "Password is required";
+        allGood = false;
+    } else if (pass.length < 6) {
+        document.getElementById("passwordError").textContent = "Password must be at least 6 characters";
         allGood = false;
     } else if (!hasUpper || !hasNumber) {
         document.getElementById("passwordError").textContent = "Password must include uppercase & number";
